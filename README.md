@@ -1,3 +1,13 @@
+# MrToph's solutions to damnvulnerabledefi.xyz
+
+To support nodev14 install this:
+
+```bash
+npm install ganache-core@beta -E
+```
+
+# damn-vulnerable-defi
+
 ![](cover.png)
 
 **A set of challenges to hack implementations of DeFi in Ethereum.** Featuring flash loans, oracles, governance, NFTs, lending pools, and more!

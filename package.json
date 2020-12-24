@@ -1,7 +1,7 @@
 {
   "scripts": {
     "test": "npm run compile && npx mocha --timeout 5000 --exit --recursive test",
-    "unstoppable": "npm run compile && npx mocha --timeout 5000 --exit test/unstoppable/unstoppable.challenge.js",
+    "unstoppable": "npm run compile && npx mocha --timeout 50000 --exit test/unstoppable/unstoppable.challenge.js",
     "truster": "npm run compile && npx mocha --timeout 5000 --exit test/truster/truster.challenge.js",
     "naive-receiver": "npm run compile && npx mocha --timeout 5000 --exit test/naive-receiver/naive-receiver.challenge.js",
     "side-entrance": "npm run compile && npx mocha --timeout 5000 --exit test/side-entrance/side-entrance.challenge.js",
@@ -17,6 +17,7 @@
     "@openzeppelin/contracts": "3.0.0",
     "@openzeppelin/test-environment": "0.1.3",
     "@openzeppelin/test-helpers": "0.5.5",
+    "ganache-core": "2.13.1-beta.1",
     "mocha": "7.1.1"
   }
 }
