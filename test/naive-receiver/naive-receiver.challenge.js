@@ -55,7 +55,7 @@ describe("[Challenge] Naive receiver", function () {
 
     // single tx
     this.attacker = await NaiveReceiverAttacker.new({ from: attacker });
-    await this.attacker.emptyReceiver(this.pool.address, this.receiver.address)
+    await this.attacker.attack(this.pool.address, this.receiver.address)
   });
 
   after(async function () {
