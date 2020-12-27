@@ -40,8 +40,6 @@ describe("[Challenge] Selfie", function () {
   });
 
   it("Exploit", async function () {
-    // Advance time 5 days so that depositors can get rewards
-
     this.attacker = await SelfieAttacker.new(
       this.token.address,
       this.governance.address,
@@ -50,6 +48,7 @@ describe("[Challenge] Selfie", function () {
     );
     // queues action to drain all funds to attack
     await this.attacker.attack({ from: attacker });
+    // Advance time 2 days to simulate governance action delay
     await time.increase(time.duration.days(2));
     await this.governance.executeAction(await this.attacker.actionId(), { from: attacker });
   });
