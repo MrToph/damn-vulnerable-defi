@@ -54,7 +54,7 @@ describe("[Challenge] Truster", function () {
     //   from: attacker,
     // });
 
-    // single tx
+    // attack in a single tx
     this.attacker = await TrusterAttacker.new({ from: attacker });
     await this.attacker.attack(this.token.address, this.pool.address, attacker);
   });

@@ -1,5 +1,10 @@
 # MrToph's solutions to damnvulnerabledefi.xyz
 
+My solutions to [damnvulnerabledefi.xyz](https://damnvulnerabledefi.xyz).
+In-depth explanations for each level [can be read on my blog](https://cmichel.io/damn-vulnerable-de-fi-solutions/).
+
+## Trouble-shooting
+
 To support nodev14 install this:
 
 ```bash

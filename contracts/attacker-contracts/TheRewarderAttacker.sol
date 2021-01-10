@@ -37,6 +37,9 @@ contract TheRewarderAttacker {
         flashLoanPool = _flashLoanPool;
         rewarderPool = _rewarderPool;
 
+        // take a flash loan, deposit into rewards pool
+        // receive rewards, pay back flash loan
+
         uint256 flashLoanBalance =
             liquidityToken.balanceOf(address(flashLoanPool));
         // approve amount of flashloan for rewarderPool.deposit

